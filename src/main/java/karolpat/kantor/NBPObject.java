@@ -1,43 +1,47 @@
 package karolpat.kantor;
 
-import java.util.ArrayList;
-
 public class NBPObject {
-	
+
 	private String table;
-	private String currency;
-	private String code;
-	private ArrayList<Rate> rates;
-	
-	
+	private String effectiveDate;
+	private String no;
+
+	public NBPObject() {
+	}
+
+	public NBPObject(String table, String effectiveDate, String no) {
+		this.table = table;
+		this.effectiveDate = effectiveDate;
+		this.no=no;
+	}
+
 	public String getTable() {
 		return table;
 	}
+
 	public void setTable(String table) {
 		this.table = table;
 	}
-	public String getCurrency() {
-		return currency;
+
+	public String getEffectiveDate() {
+		return effectiveDate;
 	}
-	public void setCurrency(String currency) {
-		this.currency = currency;
+
+	public void setEffectiveDate(String effectiveDate) {
+		this.effectiveDate = effectiveDate;
 	}
-	public String getCode() {
-		return code;
+
+	public String getNo() {
+		return no;
 	}
-	public void setCode(String code) {
-		this.code = code;
+
+	public void setNo(String no) {
+		this.no = no;
 	}
-	public ArrayList<Rate> getRates() {
-		return rates;
-	}
-	public void setRates(ArrayList<Rate> rates) {
-		this.rates = rates;
-	}
-	
+
 	@Override
 	public String toString() {
-		return "NBPObject [table=" + table + ", currency=" + currency + ", code=" + code + ", rates=" + rates + "]";
+		return "NBPObject [table=" + table + ", effectiveDate=" + effectiveDate + ", no=" + no + "]";
 	}
-	
+
 }

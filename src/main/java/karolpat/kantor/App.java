@@ -19,13 +19,13 @@ public class App {
 	public static void main(String[] args) {
 
 		try {
-			receiveApi();
+			receiveData();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void receiveApi() throws IOException {
+	public static void receiveData() throws IOException {
 
 		String sURL = "http://api.nbp.pl/api/exchangerates/tables/A?format=json";
 
@@ -49,6 +49,11 @@ public class App {
 		bufferedReader.close();
 
 		JSONArray jArray = new JSONArray(report.toString());
+		parseJSON(jArray);
+		}
+	
+	public static void parseJSON(JSONArray jArray) {
+		
 		JSONObject myJson = (JSONObject) jArray.get(0);
 
 		List<Rate> list = new ArrayList<Rate>();
@@ -59,7 +64,8 @@ public class App {
 			System.out.println(list.get(i).toString());
 		}
 		
-		String date = myJson.getString("effectiveDate");
-		System.out.println(date);
+		NBPObject nbpObject = new NBPObject(myJson.getString("table"), myJson.getString("effectiveDate"),myJson.getString("no"));
+		System.out.println(nbpObject);
+	
 	}
 }
