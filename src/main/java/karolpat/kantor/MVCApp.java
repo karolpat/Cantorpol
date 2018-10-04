@@ -2,6 +2,9 @@ package karolpat.kantor;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -9,7 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class MVCApp extends JFrame {
+public class MVCApp extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -38,9 +41,19 @@ public class MVCApp extends JFrame {
 		panel.add(textField);
 		
 		button = new JButton("Go on");
-		button.setBounds(10, 75, 100, 25	);
+		button.setBounds(10, 75, 100, 25);
+		button.addActionListener(this);
 		panel.add(button);
 	}
+
+	public void actionPerformed(ActionEvent e) {
+		try {
+			App.receiveData();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}	
 	
 
 }

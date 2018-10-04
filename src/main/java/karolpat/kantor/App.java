@@ -20,11 +20,11 @@ public class App {
 
 		new MVCApp().setVisible(true);
 		
-		try {
-			receiveData();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			receiveData();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	public static void receiveData() throws IOException {
