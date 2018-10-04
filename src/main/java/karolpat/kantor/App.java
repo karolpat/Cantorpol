@@ -3,6 +3,7 @@ package karolpat.kantor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,18 +17,8 @@ import org.json.JSONObject;
  *
  */
 public class App {
-	public static void main(String[] args) {
 
-		new MVCApp().setVisible(true);
-		
-//		try {
-//			receiveData();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-	}
-
-	public static void receiveData() throws IOException {
+	public static List<Rate> receiveData() throws IOException {
 
 		String sURL = "http://api.nbp.pl/api/exchangerates/tables/A?format=json";
 
@@ -51,13 +42,13 @@ public class App {
 		bufferedReader.close();
 
 		System.out.println(report.toString());
-		
+
 		JSONArray jArray = new JSONArray(report.toString());
-		parseJSON(jArray);
-		}
-	
-	public static void parseJSON(JSONArray jArray) {
-		
+		return parseJSON(jArray);
+	}
+
+	public static List<Rate> parseJSON(JSONArray jArray) {
+
 		JSONObject myJson = (JSONObject) jArray.get(0);
 
 		List<Rate> list = new ArrayList<Rate>();
@@ -67,9 +58,71 @@ public class App {
 			list.add(new Rate(temp.getString("currency"), temp.getString("code"), temp.getDouble("mid")));
 			System.out.println(list.get(i).toString());
 		}
-		
-		NBPObject nbpObject = new NBPObject(myJson.getString("table"), myJson.getString("effectiveDate"),myJson.getString("no"));
+
+		NBPObject nbpObject = new NBPObject(myJson.getString("table"), myJson.getString("effectiveDate"),
+				myJson.getString("no"));
 		System.out.println(nbpObject);
-	
+
+		return list;
+	}
+
+	public static String[] codeList(List<Rate> list) {
+
+		String[] codeArray = new String[list.size()];
+
+		for (int i = 0; i < codeArray.length; i++) {
+			codeArray[i] = list.get(i).getCode();
+		}
+
+		return codeArray;
+
+	}
+
+	public static BigDecimal getResult(String first, String second, double money) {
+
+		BigDecimal result;
+
+		double firstMid = getValue(first);
+		double secondMid = getValue(second);
+
+		result = new BigDecimal((firstMid / secondMid) * money);
+
+		return result;
+
+	}
+
+	public static double getValue(String code) {
+
+		double result = 0;
+		List<Rate> list = new ArrayList<Rate>();
+		try {
+			list = receiveData();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		for (Rate r : list) {
+			if (code.equals(r.getCode())) {
+				result = r.getMid();
+			}
+		}
+
+		try {
+			validateValue(result);
+		} catch (Exception ex) {
+			ex.getMessage();
+		}
+		return result;
+	}
+
+	private static double validateValue(double value) {
+
+		Exception ex;
+
+		if (value == 0) {
+			ex = new Exception("Sth went wrong with currency exchange rate");
+		}
+		return value;
 	}
 }
