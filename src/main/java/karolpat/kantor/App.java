@@ -18,6 +18,8 @@ import org.json.JSONObject;
 public class App {
 	public static void main(String[] args) {
 
+		new MVCApp().setVisible(true);
+		
 		try {
 			receiveData();
 		} catch (IOException e) {
@@ -48,6 +50,8 @@ public class App {
 
 		bufferedReader.close();
 
+		System.out.println(report.toString());
+		
 		JSONArray jArray = new JSONArray(report.toString());
 		parseJSON(jArray);
 		}
