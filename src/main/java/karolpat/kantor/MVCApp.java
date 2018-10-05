@@ -2,15 +2,16 @@ package karolpat.kantor;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,13 +24,17 @@ public class MVCApp extends JFrame implements ActionListener {
 
 	private JPanel panel;
 	private JLabel label;
+	private JLabel txtFieldLbl;
 	private JTextField textField;
+	private JTextField resultField;
 	private JButton button;
+	private JButton swap;
 	private JComboBox<String> combo;
 	private JComboBox<String> combo2;
 
 	String code;
 	String code1;
+	int tempCode;
 	double value;
 
 	public MVCApp() {
@@ -46,23 +51,38 @@ public class MVCApp extends JFrame implements ActionListener {
 		label.setFont(new Font("Courier New", 15, 15));
 		label.setForeground(Color.RED.darker());
 		panel.add(label);
-
-		textField = new JTextField("Text field");
-		textField.setBounds(10, 45, 150, 20);
+		
+		txtFieldLbl = new JLabel("Wprowadz kwotę");
+		txtFieldLbl.setBounds(10,30,200,25);
+		txtFieldLbl.setFont(new Font("Courier New", 15, 15));
+		txtFieldLbl.setForeground(Color.BLACK);
+		panel.add(txtFieldLbl);
+		
+		textField = new JTextField();
+		textField.setBounds(10, 55, 150, 20);
 		panel.add(textField);
 
-		button = new JButton("Go on");
-		button.setBounds(10, 105, 100, 25);
-		button.addActionListener(this);
-		panel.add(button);
-
 		combo = new JComboBox<String>(codeList());
-		combo.setBounds(10, 75, 100, 25);
+		combo.setBounds(10, 85, 100, 25);
 		panel.add(combo);
+		
+		swap = new JButton("Odwróć");
+		swap.setBounds(130, 85, 100, 25);
+		swap.addActionListener(this);		
+		panel.add(swap);
 
 		combo2 = new JComboBox<String>(codeList());
-		combo2.setBounds(200, 75, 100, 25);
+		combo2.setBounds(250, 85, 100, 25);
 		panel.add(combo2);
+
+		button = new JButton("Go on");
+		button.setBounds(10, 115, 100, 25);
+		button.addActionListener(this);
+		panel.add(button);
+		
+		resultField = new JTextField();
+		resultField.setBounds(10,140,150,25);
+		panel.add(resultField);
 	}
 
 	public static String[] codeList() {
@@ -81,13 +101,18 @@ public class MVCApp extends JFrame implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("dupa");
-		code = (String) combo.getSelectedItem();
-		code1 = (String) combo2.getSelectedItem();
-		value = Double.parseDouble(textField.getText());
-		System.out.println(code + " " + code1);
-		System.out.println(value);
-		System.out.println(App.getResult(code, code1, value));
+
+		if(e.getSource() == button) {
+			code = (String) combo.getSelectedItem();
+			code1 = (String) combo2.getSelectedItem();
+			value = Double.parseDouble(textField.getText());
+			resultField.setText((App.getResult(code, code1, value).toString()));
+		}else if(e.getSource() == swap){
+			tempCode = combo.getSelectedIndex();
+			combo.setSelectedIndex(combo2.getSelectedIndex());
+			combo2.setSelectedIndex(tempCode);
+		}
+		
 		
 
 	}

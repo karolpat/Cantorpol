@@ -40,8 +40,7 @@ public class App {
 		}
 
 		bufferedReader.close();
-
-		System.out.println(report.toString());
+//		System.out.println(report.toString());
 
 		JSONArray jArray = new JSONArray(report.toString());
 		return parseJSON(jArray);
@@ -52,16 +51,25 @@ public class App {
 		JSONObject myJson = (JSONObject) jArray.get(0);
 
 		List<Rate> list = new ArrayList<Rate>();
+		list = addPLN(list);
 		JSONArray rates = myJson.getJSONArray("rates");
 		for (int i = 0; i < rates.length(); i++) {
 			JSONObject temp = rates.getJSONObject(i);
 			list.add(new Rate(temp.getString("currency"), temp.getString("code"), temp.getDouble("mid")));
-			System.out.println(list.get(i).toString());
+//			System.out.println(list.get(i).toString());
 		}
 
 		NBPObject nbpObject = new NBPObject(myJson.getString("table"), myJson.getString("effectiveDate"),
 				myJson.getString("no"));
-		System.out.println(nbpObject);
+//		System.out.println(nbpObject);
+
+		return list;
+	}
+
+	private static List<Rate> addPLN(List<Rate> list) {
+
+		Rate polishCurr = new Rate("zloty", "PLN", 1.0000);
+		list.add(polishCurr);
 
 		return list;
 	}
@@ -87,7 +95,7 @@ public class App {
 
 		result = new BigDecimal((firstMid / secondMid) * money);
 
-		return result;
+		return result.setScale(2, BigDecimal.ROUND_HALF_UP);
 
 	}
 
@@ -95,10 +103,10 @@ public class App {
 
 		double result = 0;
 		List<Rate> list = new ArrayList<Rate>();
+
 		try {
 			list = receiveData();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -111,17 +119,16 @@ public class App {
 		try {
 			validateValue(result);
 		} catch (Exception ex) {
-			ex.getMessage();
+			System.out.println(ex.getMessage());
+			result = 1;
 		}
 		return result;
 	}
 
-	private static double validateValue(double value) {
+	private static double validateValue(double value) throws Exception {
 
-		Exception ex;
-
-		if (value == 0) {
-			ex = new Exception("Sth went wrong with currency exchange rate");
+		if (value == 0.0) {
+			throw new Exception("Sth went wrong with currency exchange rate");
 		}
 		return value;
 	}
